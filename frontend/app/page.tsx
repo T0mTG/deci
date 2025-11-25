@@ -4,6 +4,7 @@ import AddRow from "./ui/addRow";
 import TableDisp from "./ui/table";
 import TableDispVert from "./ui/table_vert";
 import { title } from "process";
+import { PyCom } from "./ui/test_com";
 
 export default function Home() {
   return (
@@ -17,6 +18,7 @@ export default function Home() {
           </div>  
         </div>
         <TableDispVert></TableDispVert>
+        {/* <PyCom></PyCom> */}
     </div>
   );
 }
