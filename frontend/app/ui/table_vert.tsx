@@ -2,6 +2,8 @@
 import { table } from "console"
 import React, { use, useEffect, useRef } from "react"
 import { useState } from "react"
+import { postTableFill,postSaveJson, getInitJson } from "../action/dataManager"
+
 
 export default function TableDispVert(){
     const [cell_val,setCellVal]=useState("")
@@ -9,21 +11,16 @@ export default function TableDispVert(){
     const [obj_atr,setObjAtr]=useState("")
     const [obj_id,setObjID]=useState(0)
     const [atrCount,setCount]=useState(4)
-    const [table_data,setTableData]=useState([
-    { atr1: "Nikon Z7", atr2: 1142, atr3: "45.7" },
-    { atr1: "Nikon ZF", atr2: 2099, atr3: "24.5" },
-    { atr1: "Nikon Z6ii", atr2: 1649, atr3: "24.5" },
-    ]);
+    const [table_data,setTableData]=useState([{"atr1": "", "atr2": ""}, {"atr1": "", "atr2": ""}, {"atr1": "", "atr2": ""}]);
 
-    const [atr_data,setAtr_data]=useState([
-        "Item", "Price", "Mpx"
+    const [atr_data,setAtrData]=useState([
+        "", ""
     ]);
-
 
     const AtrOnChange = (index: number , val:string) =>{
         const tmp=[...atr_data];
         tmp[index]=val;
-        setAtr_data(tmp);
+        setAtrData(tmp);
     }
 
     //revampe done
@@ -32,7 +29,7 @@ export default function TableDispVert(){
         atr_data.forEach((a,i)=>{
             empty_obj["atr"+(i+1)]=""
         });
-        setTableData((prev)=>[...prev,empty_obj])
+        setTableData((prev)=>[...prev,empty_obj]) 
         console.log(table_data);
     }
 
@@ -72,8 +69,30 @@ export default function TableDispVert(){
         setTableData(updated);
     }
 
+    const HandleFillTable = async()=>{
+        const data={"id1":table_data,"id2":atr_data};
+        // console.log(data)
+        const res=await postTableFill(table_data,atr_data)
+        console.log(res)
+    }
 
-    
+    const HandleSaveTable = async()=>{
+        console.log("trying to save")
+        const data={"id1":table_data,"id2":atr_data};
+        // console.log(data)
+        const res=await postSaveJson(table_data,atr_data)
+        console.log(res)
+    }
+
+    const HandleInitTable= async()=>{
+        console.log("initing")
+        const init_data=await getInitJson()
+        setTableData(init_data["id1"])
+        setAtrData(init_data["id2"])
+    }
+
+    useEffect(()=>{HandleInitTable();
+    }, []);  
 
     return(
         <div>
@@ -118,9 +137,12 @@ export default function TableDispVert(){
                 border-black border-2" onClick={HandleAddRow} >Add Row</button>
 
                 <button className="text-black tex-2xl bg-rose-500 p-3 rounded-2xl
-                border-black border-2" onClick={()=>{
-                    console.log(atr_data);
-                }}>print</button>
+                border-black border-2" onClick={HandleInitTable}>print</button>
+                
+                <button className="text-black tex-2xl bg-blue-500 p-3 rounded-2xl border-black border-2" 
+                onClick={HandleSaveTable}>Save</button>
+            
+
                 
             </div>
         </div>
