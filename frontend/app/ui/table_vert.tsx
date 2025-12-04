@@ -5,6 +5,8 @@ import { useState } from "react"
 import { postTableFill,postSaveJson, getInitJson } from "../action/dataManager"
 
 
+
+
 export default function TableDispVert(){
 
     const [table_data,setTableData]=useState([{"atr0": "", "atr1": ""}, {"atr0": "", "atr1": ""}, {"atr0": "", "atr1": ""}]);
@@ -75,7 +77,7 @@ export default function TableDispVert(){
     useEffect(()=>{HandleInitTable();
     }, []);  
 
-    const HandleTest=(atr_id:number)=>{
+    const HandleDeleteRow=(atr_id:number)=>{
         console.log(atr_id)
         let tmp:string[]=[];
         const tmp_table=[...table_data]
@@ -97,6 +99,15 @@ export default function TableDispVert(){
         setAtrData(tmp)
     }
 
+    const HandleDeleteCol=(obj_key:number)=>{
+        console.log(obj_key)
+        const tmp_table=[...table_data]
+        tmp_table.splice(obj_key,1)
+        setTableData(tmp_table)
+
+    }
+
+
     return(
         <div>
             <div className="flex items-center justify-center pt-50 ">
@@ -117,17 +128,24 @@ export default function TableDispVert(){
                                         }}
 
                                         defaultValue={atr} placeholder="Attribute"></input> 
-                                        <button onClick={()=>HandleTest(key_atr)}>x</button>
+                                        <button onClick={()=>HandleDeleteRow(key_atr)}>x</button>
                                     </div>
                                 </th>
 
                                 {table_data.map((obj,obj_key)=>(
                                     <td key={obj_key} className="p-3 bg-amber-100 border-2 border-black">
-                                        <input onChange={(e)=>{
+                                        <div className="flex">
+                                            <input onChange={(e)=>{
                                             HandleCellChange(obj_key,table_atr,e.target.value)
-                                        }}
-                                        value={obj[table_atr] ?? ""} placeholder="Detail">
-                                        </input>
+                                            }}
+                                            value={obj[table_atr] ?? ""} placeholder="Detail">
+                                            </input>
+                                            <div className={table_atr!="atr0"?"hidden" : ""}>
+                                                <button className="font-bold"
+                                                    onClick={()=>HandleDeleteCol(obj_key)}
+                                                >x</button>
+                                            </div>
+                                        </div>
                                     </td>
                                     )
                                 )}
