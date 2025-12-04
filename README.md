@@ -5,10 +5,13 @@ Simplified spreadsheet for you to add products and their specs / features to com
 
 
 ## Project Structure
+
+```bash
 /
 ├── frontend/ 
 ├── backend/ 
-└── README.md 
+└── README.md
+```
 
 ## Tech Stack
 
