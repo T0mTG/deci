@@ -3,6 +3,9 @@ import { table } from "console"
 import React, { use, useEffect, useRef } from "react"
 import { useState } from "react"
 import { postTableFill,postSaveJson, getInitJson } from "../action/dataManager"
+import { parse } from "path"
+import { json } from "stream/consumers"
+import { stringify } from "querystring"
 
 
 
@@ -67,15 +70,25 @@ export default function TableDispVert(){
         console.log(res)
     }
 
-    const HandleInitTable= async()=>{
-        console.log("initing")
-        const init_data=await getInitJson()
-        setTableData(init_data["id1"])
-        setAtrData(init_data["id2"])
+    const HandleSaveTable2 = async()=>{
+        console.log("trying to save")
+        const data={"id1":table_data,"id2":atr_data};
+        // console.log(data)
+        localStorage.setItem("key1","deez nut");
+
+        const res=localStorage.getItem("key1")
+        console.log(res);
     }
 
-    useEffect(()=>{HandleInitTable();
-    }, []);  
+    // const HandleInitTable= async()=>{
+    //     console.log("initing")
+    //     const init_data=await getInitJson()
+    //     setTableData(init_data["id1"])
+    //     setAtrData(init_data["id2"])
+    // }
+
+    // useEffect(()=>{HandleInitTable();
+    // }, []);  
 
     const HandleDeleteRow=(atr_id:number)=>{
         console.log(atr_id)
@@ -107,55 +120,57 @@ export default function TableDispVert(){
 
     }
 
+    const HandleExport=()=>{
+        const data= "{"+"\"id1\""+":"+JSON.stringify(table_data)+","+"\"id2\""+":"+JSON.stringify(atr_data)+"}"
+        const blob=new Blob([data],{type:'text/plain'})
+        const url=URL.createObjectURL(blob)
+        const link=document.createElement('a')
+        link.href= url
+        link.download="text.txt"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+    }
+
+        const [importedFile, setImportedFile]=useState<File|null>(null)
+        type TxtRecord = Record<string, string>;
+        const [fileData, setFileData] = useState<TxtRecord>({});
+        const fileImportInput=useRef(null)
+
+
+        const HandleImportClick=()=>{
+            fileImportInput.current.click();
+        }
+
+        const HandleImport=(e: React.ChangeEvent<HTMLInputElement>)=>{
+            const file=e.target.files?.[0];
+            if(!file){
+                console.log("no file")
+                return
+            }
+            console.log("here")
+            setImportedFile(file)
+            
+            const reader= new FileReader()
+            reader.onload=(event)=>{
+                const text=event.target?.result
+                try{
+                    const record=JSON.parse(text)
+                    console.log(record)
+                    setTableData(record["id1"])
+                    setAtrData(record["id2"])
+                }
+                catch{
+                    console.log("wtf")
+                }
+            }
+            reader.readAsText(file)
+        }   
 
     return(
         <div>
-            <div className="flex items-center justify-center pt-50 ">
-                attribute / details
-            </div>
             <div className="flex items-center justify-center pt-5">
-                <table>
-                    <thead>
-                    {atr_data.map((atr,key_atr)=>{
-                        const table_atr="atr"+(key_atr);
-                        return(
-                            // atr col: done revamp
-                            <tr key={key_atr} className="p-3 bg-amber-100 border-2 border-black">
-                                <th>
-                                    <div className="flex items-center justify-center p-3">
-                                        <input onChange={(e)=>{
-                                            AtrOnChange(key_atr,e.target.value);
-                                        }}
-
-                                        defaultValue={atr} placeholder="Attribute"></input> 
-                                        <button onClick={()=>HandleDeleteRow(key_atr)}>x</button>
-                                    </div>
-                                </th>
-
-                                {table_data.map((obj,obj_key)=>(
-                                    <td key={obj_key} className="p-3 bg-amber-100 border-2 border-black">
-                                        <div className="flex">
-                                            <input onChange={(e)=>{
-                                            HandleCellChange(obj_key,table_atr,e.target.value)
-                                            }}
-                                            value={obj[table_atr] ?? ""} placeholder="Detail">
-                                            </input>
-                                            <div className={table_atr!="atr0"?"hidden" : ""}>
-                                                <button className="font-bold"
-                                                    onClick={()=>HandleDeleteCol(obj_key)}
-                                                >x</button>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    )
-                                )}
-                            </tr>
-                        );
-                    })}
-                    </thead>
-                </table>                
-            </div>
-            <div>
                 <button className="text-black tex-2xl bg-purple-500 p-3 rounded-2xl
                 border-black border-2" onClick={HandleAddCol}>Add Col</button>
 
@@ -164,12 +179,76 @@ export default function TableDispVert(){
 
                 <button className="text-black tex-2xl bg-rose-500 p-3 rounded-2xl
                 border-black border-2" onClick={()=>{
-                    console.log(atr_data.length)
-                    console.log(table_data)}}>print</button>
+                   console.log(importedFile)}}>print</button>
                 
                 <button className="text-black tex-2xl bg-blue-500 p-3 rounded-2xl border-black border-2" 
                 onClick={HandleSaveTable}>Save</button>
+
+                <button className="text-black tex-2xl bg-indigo-500 p-3 rounded-2xl
+                border-black border-2" onClick={HandleExport}>Export</button>
+
+                <button className="text-black tex-2xl bg-emerald-500 p-3 rounded-2xl border-black border-2"
+                onClick={HandleImportClick}>Import</button>
+                
+                <input type="file" accept=".txt" ref={fileImportInput}
+                onChange={(e)=>{
+                    HandleImport(e)
+                    fileImportInput.current.value=""
+                }} className="hidden"
+                ></input>
+                <button className="text-black tex-2xl bg-blue-500 p-3 rounded-2xl border-black border-2" 
+                onClick={HandleSaveTable2}>Save2</button>
+
             </div>
+            {/* <div className="flex items-center justify-center pt-5">
+                attribute / details
+            </div> */}
+
+            <div className="flex items-center justify-center p-5">
+                <div className="overflow-x-auto ">
+                    <table className="border-2 border-black rounded-2xl">
+                        <thead>
+                        {atr_data.map((atr,key_atr)=>{
+                            const table_atr="atr"+(key_atr);
+                            return(
+                                // atr col: done revamp
+                                <tr key={key_atr} className="p-3 bg-amber-100 border-2 border-black">
+                                    <th>
+                                        <div className="flex items-center justify-center p-3">
+                                            <input onChange={(e)=>{
+                                                AtrOnChange(key_atr,e.target.value);
+                                            }}
+
+                                            defaultValue={atr} placeholder="Attribute"></input> 
+                                            <button onClick={()=>HandleDeleteRow(key_atr)}>x</button>
+                                        </div>
+                                    </th>
+
+                                    {table_data.map((obj,obj_key)=>(
+                                        <td key={obj_key} className="p-3 bg-amber-100 border-2 border-black ">
+                                            <div className="flex">
+                                                <input onChange={(e)=>{
+                                                HandleCellChange(obj_key,table_atr,e.target.value)
+                                                }}
+                                                value={obj[table_atr] ?? ""} placeholder="Detail">
+                                                </input>
+                                                <div className={table_atr!="atr0"?"hidden" : ""}>
+                                                    <button className="font-bold"
+                                                        onClick={()=>HandleDeleteCol(obj_key)}
+                                                    >x</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        )
+                                    )}
+                                </tr>
+                            );
+                        })}
+                        </thead>
+                    </table>                
+                </div>
+            </div>
+            
         </div>
     )
 }
