@@ -59,12 +59,12 @@ export default function TableDispVert(){
         setTableData(updated);
     }
 
-    const HandleFillTable = async()=>{
-        const data={"id1":table_data,"id2":atr_data};
-        // console.log(data)
-        const res=await postTableFill(table_data,atr_data)
-        console.log(res)
-    }
+    // const HandleFillTable = async()=>{
+    //     const data={"id1":table_data,"id2":atr_data};
+    //     // console.log(data)
+    //     const res=await postTableFill(table_data,atr_data)
+    //     console.log(res)
+    // }
 
     // const HandleInitTable= async()=>{
     //     console.log("initing")
@@ -252,8 +252,8 @@ export default function TableDispVert(){
                     border-black border-2" onClick={()=>{
                     console.log(saveList)}}>print</button>
 
-                    <button className="text-black emerald-500 p-2 border-black border-2 rounded-xl "
-                    onClick={HandleFillTable}>Get started (AI)</button>
+                    {/* <button className="text-black emerald-500 p-2 border-black border-2 rounded-xl "
+                    onClick={HandleFillTable}>Get started (AI)</button> */}
                     
                     {/* <button className="text-black text-l bg-blue-500 p-2 rounded-2xl border-black border-2" 
                     onClick={HandleSaveTable}>Save</button> */}
