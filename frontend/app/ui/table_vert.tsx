@@ -137,11 +137,16 @@ export default function TableDispVert(){
         if(key=="random"){
             return 
         }
-        const raw_text=localStorage.getItem(key)
-        if(raw_text!=null){
-            const data=JSON.parse(localStorage.getItem(key))
-            setAtrData(data["id2"])
-            setTableData(data["id1"])
+        const raw_text: string|null=""
+        if(raw_text!=""){
+            try{
+                const data=JSON.parse(localStorage.getItem(key))
+                setAtrData(data["id2"])
+                setTableData(data["id1"])
+            }
+            catch{
+                console.log("load table fail")
+            }
         }
 
     }
@@ -220,7 +225,7 @@ export default function TableDispVert(){
                 }
                 catch{
                     console.log("wtf")
-                    console.log(text)
+                    // console.log(text)    
                 }
             }
             reader.readAsText(file)
