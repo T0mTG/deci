@@ -137,9 +137,12 @@ export default function TableDispVert(){
         if(key=="random"){
             return 
         }
-        const data=JSON.parse(localStorage.getItem(key))
-        setAtrData(data["id2"])
-        setTableData(data["id1"])
+        const raw_text=localStorage.getItem(key)
+        if(raw_text!=null){
+            const data=JSON.parse(localStorage.getItem(key))
+            setAtrData(data["id2"])
+            setTableData(data["id1"])
+        }
 
     }
 
