@@ -1,10 +1,7 @@
-import Image from "next/image";
 import NavButton from "./ui/navButton";
-import AddRow from "./ui/addRow";
-import TableDisp from "./ui/table";
 import TableDispVert from "./ui/table_vert";
-import { title } from "process";
-import { PyCom } from "./ui/test_com";
+// import { title } from "process";
+// import { PyCom } from "./ui/test_com";
 
 export default function Home() {
   return (
