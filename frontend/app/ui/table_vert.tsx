@@ -1,8 +1,8 @@
 'use client'
-import { table } from "console"
+// import { table } from "console"
 import React, { useEffect, useRef } from "react"
 import { useState } from "react"
-import { postSaveJson } from "../action/dataManager"
+// import { postSaveJson } from "../action/dataManager"
 // import { parse } from "path"
 // import { json } from "stream/consumers"
 // import { stringify } from "querystring"
@@ -105,7 +105,7 @@ export default function TableDispVert(){
             })
         }
         else{
-            let del_atr="atr"+(atr_data.length-1)
+            const del_atr="atr"+(atr_data.length-1)
             tmp_table.forEach((obj)=>{
                 delete obj[del_atr]
             })
@@ -176,7 +176,7 @@ export default function TableDispVert(){
         URL.revokeObjectURL(url)
     }
 
-        const [pendingFile, setPendingFile]=useState<Object|null>()
+        const [pendingFile, setPendingFile]=useState<object|null>()
         // type TxtRecord = Record<string, string>;
         const fileImportInput=useRef(null)
 
@@ -292,8 +292,8 @@ export default function TableDispVert(){
                     
                     {saveList.map((saveFile,sf_id)=>{
                         return(
-                            <div>
-                                <button className="pl-2" key={sf_id} onClick={()=>{HandleLoadTable(saveFile)}}>
+                            <div key={sf_id}>
+                                <button className="pl-2"  onClick={()=>{HandleLoadTable(saveFile)}}>
                                     {saveFile}
                                 </button>
                                 <button className="font-bold pl-3"
