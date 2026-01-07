@@ -13,13 +13,36 @@ import { Dialog } from "@headlessui/react"
 
 export default function TableDispVert(){
 
-    const [table_data,setTableData]=useState([{"atr0": "", "atr1": ""}, {"atr0": "", "atr1": ""}, {"atr0": "", "atr1": ""}]);
+    const [table_data,setTableData]=useState<Record<string,string>[]>([]);
     const [atr_data,setAtrData]=useState([
         "", ""
     ]);
     const [fileName,setFileName]=useState("")
     const [saveCount, setSaveCount]=useState(0)
-    const [saveList, setSaveList]=useState([])
+    const [saveList, setSaveList]=useState<string[]>([])
+
+    // const HandleInitTable= async()=>{
+    //     console.log("initing")
+    //     const init_data=await getInitJson()
+    //     setTableData(init_data["id1"])
+    //     setAtrData(init_data["id2"])
+    // }
+
+    const HandleInitTable =()=>{
+        let tmp_table=[]
+        let empty_obj: Record<string,string>={};
+        for(let i=0;i<2;i++){
+            empty_obj["atr"+(i)]=""
+        }
+        tmp_table.push(empty_obj)
+        tmp_table.push(empty_obj)
+        tmp_table.push(empty_obj)
+        setTableData(tmp_table)
+    }
+
+    useEffect(()=>{HandleInitTable();
+    }, []);  
+
 
     const AtrOnChange = (index: number , val:string) =>{
         const tmp=[...atr_data];
@@ -66,16 +89,7 @@ export default function TableDispVert(){
     //     console.log(res)
     // }
 
-    // const HandleInitTable= async()=>{
-    //     console.log("initing")
-    //     const init_data=await getInitJson()
-    //     setTableData(init_data["id1"])
-    //     setAtrData(init_data["id2"])
-    // }
-
-    // useEffect(()=>{HandleInitTable();
-    // }, []);  
-
+    
     const HandleDeleteRow=(atr_id:number)=>{
         let tmp:string[]=[];
         const tmp_table=[...table_data]
@@ -162,7 +176,7 @@ export default function TableDispVert(){
         URL.revokeObjectURL(url)
     }
 
-        const [pendingFile, setPendingFile]=useState<File|null>(null)
+        const [pendingFile, setPendingFile]=useState<Object|null>()
         type TxtRecord = Record<string, string>;
         const fileImportInput=useRef(null)
 
@@ -211,6 +225,8 @@ export default function TableDispVert(){
         const HandlePopUp =(e: React.ChangeEvent<HTMLInputElement>)=>{
             const file=e.target.files?.[0];
             setLoadOpen(true)
+            console.log("from handlepopup")
+            console.log(typeof(file))
             setPendingFile(file)
         }
 
