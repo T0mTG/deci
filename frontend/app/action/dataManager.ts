@@ -1,6 +1,6 @@
 "use server";
 
-export async function postTableFill(table_data:Record<string,any>[], atr_data: string[]) {
+export async function postTableFill(table_data:Record<string,string>[], atr_data: string[]) {
     const data={"id1":table_data,"id2":atr_data};
     const res = await fetch("http://127.0.0.1:8000/fill/", {
         method: "POST",
@@ -14,7 +14,7 @@ export async function postTableFill(table_data:Record<string,any>[], atr_data: s
   return res.json();
 }
   
-export async function postSaveJson(table_data:Record<string,any>[], atr_data: string[]) {
+export async function postSaveJson(table_data:Record<string,string>[], atr_data: string[]) {
     const data={"id1":table_data,"id2":atr_data};
     const res = await fetch("http://127.0.0.1:8000/save/", {
         method: "POST",
