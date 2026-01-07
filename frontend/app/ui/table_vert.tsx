@@ -1,12 +1,12 @@
 'use client'
 import { table } from "console"
-import React, { use, useEffect, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import { useState } from "react"
-import { postTableFill,postSaveJson, getInitJson } from "../action/dataManager"
-import { parse } from "path"
-import { json } from "stream/consumers"
-import { stringify } from "querystring"
-import { Dialog } from "@headlessui/react"
+import { postSaveJson } from "../action/dataManager"
+// import { parse } from "path"
+// import { json } from "stream/consumers"
+// import { stringify } from "querystring"
+// import { Dialog } from "@headlessui/react"
 
 
 
@@ -29,8 +29,8 @@ export default function TableDispVert(){
     // }
 
     const HandleInitTable =()=>{
-        let tmp_table=[]
-        let empty_obj: Record<string,string>={};
+        const tmp_table=[]
+        const empty_obj: Record<string,string>={};
         for(let i=0;i<2;i++){
             empty_obj["atr"+(i)]=""
         }
@@ -91,11 +91,11 @@ export default function TableDispVert(){
 
     
     const HandleDeleteRow=(atr_id:number)=>{
-        let tmp:string[]=[];
+        const tmp:string[]=[];
         const tmp_table=[...table_data]
         console.log("del row "+atr_id)
         if(atr_id+1<atr_data.length){
-            let del_atr="atr"+(atr_data.length-1)
+            const del_atr="atr"+(atr_data.length-1)
             // console.log(del_atr)
             tmp_table.forEach((obj)=>{
                 for(let i=atr_id;i<atr_data.length;i++){
@@ -125,13 +125,13 @@ export default function TableDispVert(){
         setTableData(tmp_table)
     }
 
-    const HandleSaveTable = async()=>{
-        console.log("trying to save")
-        const data={"id1":table_data,"id2":atr_data};
-        // console.log(data)
-        const res=await postSaveJson(table_data,atr_data)
-        console.log(res)
-    }
+    // const HandleSaveTable = async()=>{
+    //     console.log("trying to save")
+    //     const data={"id1":table_data,"id2":atr_data};
+    //     // console.log(data)
+    //     const res=await postSaveJson(table_data,atr_data)
+    //     console.log(res)
+    // }
 
     const HandleLoadTable =(key:string)=>{
         if(key=="random"){
@@ -143,7 +143,7 @@ export default function TableDispVert(){
 
     }
 
-    const [saveOpen,setSaveOpen] = useState(false)
+    // const [saveOpen,setSaveOpen] = useState(false)
 
     const HandleSaveTable2 =()=>{
         console.log("trying to save")
@@ -177,7 +177,7 @@ export default function TableDispVert(){
     }
 
         const [pendingFile, setPendingFile]=useState<Object|null>()
-        type TxtRecord = Record<string, string>;
+        // type TxtRecord = Record<string, string>;
         const fileImportInput=useRef(null)
 
         /*
@@ -188,11 +188,13 @@ export default function TableDispVert(){
         */
         
         const HandleImportClick=()=>{
-            fileImportInput.current.click();
+            if(fileImportInput!=null){
+                fileImportInput.current.click();
+            }
         }
         
         const [loadOpen, setLoadOpen] = useState(false);
-        const [isImportClick, setIsImportClick]=useState(false)
+        // const [isImportClick, setIsImportClick]=useState(false)
 
         const HandleImport=()=>{
             const file=pendingFile
@@ -282,7 +284,7 @@ export default function TableDispVert(){
                     <input type="file" accept=".txt" ref={fileImportInput}
                     onChange={(e)=>{
                         HandlePopUp(e)
-                        fileImportInput.current.value=""
+                        fileImportInput.current.value=null
                     }} className="hidden"
                     ></input>
                     <button className="text-black p-2 border-black border-2 rounded-xl" 
