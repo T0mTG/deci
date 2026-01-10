@@ -137,15 +137,15 @@ export default function TableDispVert(){
         if(key=="random"){
             return 
         }
-        const raw_text: string|null=""
-        if(raw_text!=""){
+        const raw_text=localStorage.getItem(key)
+        if(raw_text!=null){
             try{
-                const data=JSON.parse(localStorage.getItem(key))
+                const data=JSON.parse(raw_text)
                 setAtrData(data["id2"])
                 setTableData(data["id1"])
             }
             catch{
-                console.log("load table fail")
+                console.log("HandleLoadTable failed, probably null")
             }
         }
 
@@ -184,9 +184,9 @@ export default function TableDispVert(){
         URL.revokeObjectURL(url)
     }
 
-        const [pendingFile, setPendingFile]=useState<object|null>()
+        const [pendingFile, setPendingFile]=useState<File|null>(null)
         // type TxtRecord = Record<string, string>;
-        const fileImportInput=useRef(null)
+        const fileImportInput=useRef<HTMLInputElement | null>(null)
 
         /*
         import sequence:
@@ -197,7 +197,7 @@ export default function TableDispVert(){
         
         const HandleImportClick=()=>{
             if(fileImportInput!=null){
-                fileImportInput.current.click();
+                fileImportInput.current?.click();
             }
         }
         
@@ -216,6 +216,10 @@ export default function TableDispVert(){
             const reader= new FileReader()
             reader.onload=(event)=>{
                 const text=event.target?.result
+                if (typeof text!=="string") {
+                    console.log("HandleImport not a string")
+                    return
+                }
                 try{
                     const record=JSON.parse(text)
                     console.log(record)
@@ -225,9 +229,10 @@ export default function TableDispVert(){
                 }
                 catch{
                     console.log("wtf")
-                    // console.log(text)    
+                    console.log(text)
                 }
             }
+            
             reader.readAsText(file)
         }  
           
@@ -237,7 +242,7 @@ export default function TableDispVert(){
             setLoadOpen(true)
             console.log("from handlepopup")
             console.log(typeof(file))
-            setPendingFile(file)
+            if(file) setPendingFile(file)
         }
 
     return(
@@ -292,8 +297,9 @@ export default function TableDispVert(){
                     <input type="file" accept=".txt" ref={fileImportInput}
                     onChange={(e)=>{
                         HandlePopUp(e)
-                        fileImportInput.current.value=null
-                    }} className="hidden"
+                        // fileImportInput.current.value=null
+                    }} 
+                    className="hidden"
                     ></input>
                     <button className="text-black p-2 border-black border-2 rounded-xl" 
                     onClick={HandleSaveTable2}>Save</button>
